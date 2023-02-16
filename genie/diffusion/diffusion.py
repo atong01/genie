@@ -21,7 +21,7 @@ class Diffusion(LightningModule, ABC):
     @abstractmethod
     def setup_schedule(self):
         """Set up variance schedule and precompute its corresponding terms."""
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def transform(self, batch):
@@ -32,27 +32,27 @@ class Diffusion(LightningModule, ABC):
 
         Output: frames (shape: b x n_res)
         """
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def sample_timesteps(self, num_samples):
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def sample_frames(self, mask):
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def q(self, t0, s, mask):
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def p(self, ts, s, mask):
-        raise NotImplemented
+        raise NotImplementedError
 
     @abstractmethod
     def loss_fn(self, tnoise, ts, s):
-        raise NotImplemented
+        raise NotImplementedError
 
     def p_sample_loop(self, mask, verbose=True):
         if not self.setup:
