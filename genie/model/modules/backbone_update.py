@@ -22,9 +22,7 @@ from genie.utils.affine_utils import T, quat_to_rot
 
 
 class BackboneUpdate(nn.Module):
-    """
-    Implements Algorithm 23.
-    """
+    """Implements Algorithm 23."""
 
     def __init__(self, c_s):
         """
@@ -32,7 +30,7 @@ class BackboneUpdate(nn.Module):
             c_s:
                 Single representation channel dimension
         """
-        super(BackboneUpdate, self).__init__()
+        super().__init__()
 
         self.c_s = c_s
 

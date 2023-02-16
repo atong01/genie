@@ -1,8 +1,9 @@
+import argparse
 import os
 import sys
-import torch
-import argparse
+
 import numpy as np
+import torch
 from tqdm import tqdm, trange
 
 from genie.utils.model_io import load_model
@@ -11,20 +12,18 @@ from genie.utils.model_io import load_model
 def main(args):
 
     # device
-    device = "cuda:{}".format(args.gpu) if args.gpu is not None else "cpu"
+    device = f"cuda:{args.gpu}" if args.gpu is not None else "cpu"
 
     # model
-    model = load_model(
-        args.rootdir, args.model_name, args.model_version, args.model_epoch
-    ).to(device)
+    model = load_model(args.rootdir, args.model_name, args.model_version, args.model_epoch).to(
+        device
+    )
 
     # output directory
-    outdir = os.path.join(
-        model.rootdir, model.name, "version_{}".format(model.version), "samples"
-    )
+    outdir = os.path.join(model.rootdir, model.name, f"version_{model.version}", "samples")
     if not os.path.exists(outdir):
         os.mkdir(outdir)
-    outdir = os.path.join(outdir, "epoch_{}".format(model.epoch))
+    outdir = os.path.join(outdir, f"epoch_{model.epoch}")
     if os.path.exists(outdir):
         print("Samples existed!")
         sys.exit(0)
@@ -72,15 +71,9 @@ if __name__ == "__main__":
         help="Root directory (default to runs)",
         default="runs",
     )
-    parser.add_argument(
-        "-n", "--model_name", type=str, help="Name of Genie model", required=True
-    )
-    parser.add_argument(
-        "-v", "--model_version", type=int, help="Version of Genie model"
-    )
-    parser.add_argument(
-        "-e", "--model_epoch", type=int, help="Epoch Genie model checkpointed"
-    )
+    parser.add_argument("-n", "--model_name", type=str, help="Name of Genie model", required=True)
+    parser.add_argument("-v", "--model_version", type=int, help="Version of Genie model")
+    parser.add_argument("-e", "--model_epoch", type=int, help="Epoch Genie model checkpointed")
     parser.add_argument("--batch_size", type=int, help="Batch size", default=5)
     parser.add_argument("--num_batches", type=int, help="Number of batches", default=2)
     args = parser.parse_args()

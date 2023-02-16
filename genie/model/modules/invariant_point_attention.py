@@ -15,21 +15,17 @@
 # limitations under the License.
 
 import math
+
 import torch
 import torch.nn as nn
 
 from genie.model.modules.primitives import Linear, ipa_point_weights_init_
 from genie.utils.affine_utils import T
-from genie.utils.tensor_utils import (
-    permute_final_dims,
-    flatten_final_dims,
-)
+from genie.utils.tensor_utils import flatten_final_dims, permute_final_dims
 
 
 class InvariantPointAttention(nn.Module):
-    """
-    Implements Algorithm 22.
-    """
+    """Implements Algorithm 22."""
 
     def __init__(
         self,
@@ -57,7 +53,7 @@ class InvariantPointAttention(nn.Module):
             no_v_points:
                 Number of value points to generate
         """
-        super(InvariantPointAttention, self).__init__()
+        super().__init__()
 
         self.c_s = c_s
         self.c_z = c_z
@@ -86,12 +82,10 @@ class InvariantPointAttention(nn.Module):
 
         self.linear_b = Linear(self.c_z, self.no_heads)
 
-        self.head_weights = nn.Parameter(torch.zeros((no_heads)))
+        self.head_weights = nn.Parameter(torch.zeros(no_heads))
         ipa_point_weights_init_(self.head_weights)
 
-        concat_out_dim = self.no_heads * (
-            self.c_z + self.c_hidden + self.no_v_points * 4
-        )
+        concat_out_dim = self.no_heads * (self.c_z + self.c_hidden + self.no_v_points * 4)
         # concat_out_dim = self.no_heads * (self.c_hidden
         #                                   + self.no_v_points * 4)
         self.linear_out = Linear(concat_out_dim, self.c_s, init="final")
@@ -164,9 +158,7 @@ class InvariantPointAttention(nn.Module):
         kv_pts = kv_pts.view(*kv_pts.shape[:-2], self.no_heads, -1, 3)
 
         # [*, N_res, H, P_q/P_v, 3]
-        k_pts, v_pts = torch.split(
-            kv_pts, [self.no_qk_points, self.no_v_points], dim=-2
-        )
+        k_pts, v_pts = torch.split(kv_pts, [self.no_qk_points, self.no_v_points], dim=-2)
 
         ##########################
         # Compute attention scores
@@ -192,9 +184,7 @@ class InvariantPointAttention(nn.Module):
         head_weights = self.softplus(self.head_weights).view(
             *((1,) * len(pt_att.shape[:-2]) + (-1, 1))
         )
-        head_weights = head_weights * math.sqrt(
-            1.0 / (3 * (self.no_qk_points * 9.0 / 2))
-        )
+        head_weights = head_weights * math.sqrt(1.0 / (3 * (self.no_qk_points * 9.0 / 2)))
         pt_att = pt_att * head_weights
 
         # [*, N_res, N_res, H]
@@ -231,9 +221,7 @@ class InvariantPointAttention(nn.Module):
         o_pt = t[..., None, None].invert_apply(o_pt)
 
         # [*, N_res, H * P_v]
-        o_pt_norm = flatten_final_dims(
-            torch.sqrt(torch.sum(o_pt**2, dim=-1) + self.eps), 2
-        )
+        o_pt_norm = flatten_final_dims(torch.sqrt(torch.sum(o_pt**2, dim=-1) + self.eps), 2)
 
         # [*, N_res, H * P_v, 3]
         o_pt = o_pt.view(*o_pt.shape[:-3], -1, 3)
@@ -245,8 +233,6 @@ class InvariantPointAttention(nn.Module):
         o_pair = flatten_final_dims(o_pair, 2)
 
         # [*, N_res, C_s]
-        s = self.linear_out(
-            torch.cat((o, *torch.unbind(o_pt, dim=-1), o_pt_norm, o_pair), dim=-1)
-        )
+        s = self.linear_out(torch.cat((o, *torch.unbind(o_pt, dim=-1), o_pt_norm, o_pair), dim=-1))
 
         return s

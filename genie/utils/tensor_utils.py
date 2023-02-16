@@ -15,6 +15,7 @@
 # limitations under the License.
 
 from functools import partial
+
 import torch
 import torch.nn as nn
 
@@ -92,7 +93,7 @@ def tree_map(fn, tree, leaf_type):
     elif tree_type is list:
         return [tree_map(fn, x, leaf_type) for x in tree]
     elif tree_type is tuple:
-        return tuple([tree_map(fn, x, leaf_type) for x in tree])
+        return tuple(tree_map(fn, x, leaf_type) for x in tree)
     elif tree_type is leaf_type:
         return fn(tree)
     else:
@@ -103,8 +104,7 @@ tensor_tree_map = partial(tree_map, leaf_type=torch.Tensor)
 
 
 def chunk_layer(layer, inputs, chunk_size, no_batch_dims):
-    """
-    Implements the "chunking" procedure described in section 1.11.8.
+    """Implements the "chunking" procedure described in section 1.11.8.
 
     Layer outputs and inputs are interpreted as simplified "pytrees,"
     consisting only of (nested) lists, tuples, and dicts with tensor

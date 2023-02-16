@@ -41,16 +41,10 @@ class Config:
             "template_type": config.get("templateType", "v1"),
             # pair transform network
             "n_pair_transform_layer": int(config.get("numPairTransformLayers", 5)),
-            "include_mul_update": config.get(
-                "includeTriangularMultiplicativeUpdate", True
-            ),
+            "include_mul_update": config.get("includeTriangularMultiplicativeUpdate", True),
             "include_tri_att": config.get("includeTriangularAttention", False),
-            "c_hidden_mul": int(
-                config.get("triangularMultiplicativeHiddenDimension", 128)
-            ),
-            "c_hidden_tri_att": int(
-                config.get("triangularAttentionHiddenDimension", 32)
-            ),
+            "c_hidden_mul": int(config.get("triangularMultiplicativeHiddenDimension", 128)),
+            "c_hidden_tri_att": int(config.get("triangularAttentionHiddenDimension", 32)),
             "n_head_tri": int(config.get("triangularAttentionNumHeads", 4)),
             "tri_dropout": float(config.get("triangularDropout", 0.25)),
             "pair_transition_n": int(config.get("pairTransitionN", 4)),
@@ -62,12 +56,8 @@ class Config:
             "n_qk_point": int(config.get("ipaNumQkPoints", 4)),
             "n_v_point": int(config.get("ipaNumVPoints", 8)),
             "ipa_dropout": float(config.get("ipaDropout", 0.1)),
-            "n_structure_transition_layer": int(
-                config.get("numStructureTransitionLayers", 1)
-            ),
-            "structure_transition_dropout": float(
-                config.get("structureTransitionDropout", 0.1)
-            ),
+            "n_structure_transition_layer": int(config.get("numStructureTransitionLayers", 1)),
+            "structure_transition_dropout": float(config.get("structureTransitionDropout", 0.1)),
         }
 
         self.training = {

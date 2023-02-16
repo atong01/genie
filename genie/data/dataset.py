@@ -8,7 +8,7 @@ class SCOPeDataset(Dataset):
     # Assumption: all domains have at least n_res residues
 
     def __init__(self, filepaths, max_n_res, min_n_res):
-        super(SCOPeDataset, self).__init__()
+        super().__init__()
         self.filepaths = filepaths
         self.max_n_res = max_n_res
         self.min_n_res = min_n_res
@@ -20,9 +20,7 @@ class SCOPeDataset(Dataset):
         coords = load_coord(self.filepaths[idx])
         n_res = int(len(coords) / 3)
         if self.max_n_res is not None:
-            coords = np.concatenate(
-                [coords, np.zeros(((self.max_n_res - n_res) * 3, 3))], axis=0
-            )
+            coords = np.concatenate([coords, np.zeros(((self.max_n_res - n_res) * 3, 3))], axis=0)
             mask = np.concatenate([np.ones(n_res), np.zeros(self.max_n_res - n_res)])
         else:
             assert self.min_n_res is not None

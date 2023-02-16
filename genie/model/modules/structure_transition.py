@@ -21,7 +21,7 @@ from genie.model.modules.primitives import Linear
 
 class StructureTransitionLayer(nn.Module):
     def __init__(self, c):
-        super(StructureTransitionLayer, self).__init__()
+        super().__init__()
 
         self.c = c
 
@@ -46,7 +46,7 @@ class StructureTransitionLayer(nn.Module):
 
 class StructureTransition(nn.Module):
     def __init__(self, c, num_layers, dropout_rate):
-        super(StructureTransition, self).__init__()
+        super().__init__()
 
         self.c = c
         self.num_layers = num_layers

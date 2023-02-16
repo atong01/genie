@@ -1,6 +1,7 @@
+import glob
 import os
 import sys
-import glob
+
 import numpy as np
 
 from genie.config import Config
@@ -10,26 +11,22 @@ from genie.diffusion.Genie import Genie
 def get_versions(rootdir, name):
     basedir = os.path.join(rootdir, name)
     return sorted(
-        [
+        
             int(version_dir.split("_")[-1])
-            for version_dir in glob.glob(
-                os.path.join(basedir, "version_*"), recursive=False
-            )
-        ]
+            for version_dir in glob.glob(os.path.join(basedir, "version_*"), recursive=False)
+        
     )
 
 
 def get_epochs(rootdir, name, version):
     basedir = os.path.join(rootdir, name)
     return sorted(
-        [
+        
             int(epoch_filepath.split("=")[-1].split(".")[0])
             for epoch_filepath in glob.glob(
-                os.path.join(
-                    basedir, "version_{}".format(version), "checkpoints", "*.ckpt"
-                )
+                os.path.join(basedir, f"version_{version}", "checkpoints", "*.ckpt")
             )
-        ]
+        
     )
 
 
@@ -49,7 +46,7 @@ def load_model(rootdir, name, version=None, epoch=None):
         version = np.max(available_versions)
     else:
         if version not in available_versions:
-            print("Missing checkpoint version: {}".format(version))
+            print(f"Missing checkpoint version: {version}")
             sys.exit(0)
 
     # check for latest epoch if needed
@@ -61,15 +58,15 @@ def load_model(rootdir, name, version=None, epoch=None):
         epoch = np.max(available_epochs)
     else:
         if epoch not in available_epochs:
-            print("Missing checkpoint epoch: {}".format(epoch))
+            print(f"Missing checkpoint epoch: {epoch}")
             sys.exit(0)
 
     # load checkpoint
     ckpt_filepath = os.path.join(
         basedir,
-        "version_{}".format(version),
+        f"version_{version}",
         "checkpoints",
-        "epoch={}.ckpt".format(epoch),
+        f"epoch={epoch}.ckpt",
     )
     diffusion = Genie.load_from_checkpoint(ckpt_filepath, config=config)
 

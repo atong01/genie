@@ -1,35 +1,31 @@
-import torch
-from tqdm import tqdm
-from torch.optim import Adam
 from abc import ABC, abstractmethod
+
+import torch
 from pytorch_lightning.core import LightningModule
+from torch.optim import Adam
+from tqdm import tqdm
 
 from genie.model.model import Denoiser
 
 
 class Diffusion(LightningModule, ABC):
     def __init__(self, config):
-        super(Diffusion, self).__init__()
+        super().__init__()
 
         self.config = config
 
-        self.model = Denoiser(
-            **self.config.model, n_timestep=self.config.diffusion["n_timestep"]
-        )
+        self.model = Denoiser(**self.config.model, n_timestep=self.config.diffusion["n_timestep"])
 
         self.setup = False
 
     @abstractmethod
     def setup_schedule(self):
-        """
-        Set up variance schedule and precompute its corresponding terms.
-        """
+        """Set up variance schedule and precompute its corresponding terms."""
         raise NotImplemented
 
     @abstractmethod
     def transform(self, batch):
-        """
-        Transform batch data from data pipeline into the desired format
+        """Transform batch data from data pipeline into the desired format.
 
         Input:
                 batch - coordinates from data pipeline (shape: b x (n_res * 3))
@@ -76,8 +72,7 @@ class Diffusion(LightningModule, ABC):
         return ts_seq
 
     def training_step(self, batch, batch_idx):
-        """
-        Training iteration.
+        """Training iteration.
 
         Input:
                 batch     - coordinates from data pipeline (shape: b x (n_res * 3))

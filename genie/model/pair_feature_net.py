@@ -6,7 +6,7 @@ from genie.model.template import get_template_fn
 
 class PairFeatureNet(nn.Module):
     def __init__(self, c_s, c_p, relpos_k, template_type):
-        super(PairFeatureNet, self).__init__()
+        super().__init__()
 
         self.c_s = c_s
         self.c_p = c_p

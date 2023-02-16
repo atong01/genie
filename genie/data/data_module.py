@@ -1,7 +1,8 @@
-import os
 import glob
-from torch.utils.data import DataLoader
+import os
+
 from pytorch_lightning import LightningDataModule
+from torch.utils.data import DataLoader
 
 from genie.data.dataset import SCOPeDataset
 from genie.utils.data_io import load_filepaths
@@ -20,7 +21,7 @@ class SCOPeDataModule(LightningDataModule):
         dataset_classes,
         batch_size,
     ):
-        super(SCOPeDataModule, self).__init__()
+        super().__init__()
 
         self.name = name
         self.log_dir = log_dir

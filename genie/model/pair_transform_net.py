@@ -1,15 +1,15 @@
 from torch import nn
 
+from genie.model.modules.dropout import DropoutColumnwise, DropoutRowwise
 from genie.model.modules.pair_transition import PairTransition
 from genie.model.modules.triangular_attention import (
-    TriangleAttentionStartingNode,
     TriangleAttentionEndingNode,
+    TriangleAttentionStartingNode,
 )
 from genie.model.modules.triangular_multiplicative_update import (
-    TriangleMultiplicationOutgoing,
     TriangleMultiplicationIncoming,
+    TriangleMultiplicationOutgoing,
 )
-from genie.model.modules.dropout import DropoutRowwise, DropoutColumnwise
 
 
 class PairTransformLayer(nn.Module):
@@ -24,18 +24,14 @@ class PairTransformLayer(nn.Module):
         tri_dropout,
         pair_transition_n,
     ):
-        super(PairTransformLayer, self).__init__()
+        super().__init__()
 
         self.tri_mul_out = (
-            TriangleMultiplicationOutgoing(c_p, c_hidden_mul)
-            if include_mul_update
-            else None
+            TriangleMultiplicationOutgoing(c_p, c_hidden_mul) if include_mul_update else None
         )
 
         self.tri_mul_in = (
-            TriangleMultiplicationIncoming(c_p, c_hidden_mul)
-            if include_mul_update
-            else None
+            TriangleMultiplicationIncoming(c_p, c_hidden_mul) if include_mul_update else None
         )
 
         self.tri_att_start = (
@@ -82,7 +78,7 @@ class PairTransformNet(nn.Module):
         tri_dropout,
         pair_transition_n,
     ):
-        super(PairTransformNet, self).__init__()
+        super().__init__()
 
         layers = [
             PairTransformLayer(

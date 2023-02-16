@@ -2,9 +2,9 @@ import torch
 
 from genie.diffusion.diffusion import Diffusion
 from genie.diffusion.schedule import get_betas
-from genie.utils.loss import rmsd
 from genie.utils.affine_utils import T
 from genie.utils.geo_utils import compute_frenet_frames
+from genie.utils.loss import rmsd
 
 
 class Genie(Diffusion):
@@ -33,14 +33,10 @@ class Genie(Diffusion):
             self.betas * self.sqrt_alphas_cumprod_prev / self.one_minus_alphas_cumprod
         )
         self.posterior_mean_coef2 = (
-            self.one_minus_alphas_cumprod_prev
-            * self.sqrt_alphas
-            / self.one_minus_alphas_cumprod
+            self.one_minus_alphas_cumprod_prev * self.sqrt_alphas / self.one_minus_alphas_cumprod
         )
         self.posterior_variance = (
-            self.betas
-            * self.one_minus_alphas_cumprod_prev
-            / self.one_minus_alphas_cumprod
+            self.betas * self.one_minus_alphas_cumprod_prev / self.one_minus_alphas_cumprod
         )
 
     def transform(self, batch):
@@ -56,9 +52,9 @@ class Genie(Diffusion):
         return T(rots, trans), mask
 
     def sample_timesteps(self, num_samples):
-        return torch.randint(
-            0, self.config.diffusion["n_timestep"], size=(num_samples,)
-        ).to(self.device)
+        return torch.randint(0, self.config.diffusion["n_timestep"], size=(num_samples,)).to(
+            self.device
+        )
 
     def sample_frames(self, mask):
         trans = torch.randn((mask.shape[0], mask.shape[1], 3)).to(self.device)
@@ -71,16 +67,12 @@ class Genie(Diffusion):
         # [b, n_res, 3]
         trans_noise = torch.randn_like(t0.trans) * mask.unsqueeze(-1)
         rots_noise = (
-            torch.eye(3)
-            .view(1, 1, 3, 3)
-            .repeat(t0.shape[0], t0.shape[1], 1, 1)
-            .to(self.device)
+            torch.eye(3).view(1, 1, 3, 3).repeat(t0.shape[0], t0.shape[1], 1, 1).to(self.device)
         )
 
         trans = (
             self.sqrt_alphas_cumprod[s].view(-1, 1, 1).to(self.device) * t0.trans
-            + self.sqrt_one_minus_alphas_cumprod[s].view(-1, 1, 1).to(self.device)
-            * trans_noise
+            + self.sqrt_one_minus_alphas_cumprod[s].view(-1, 1, 1).to(self.device) * trans_noise
         )
         rots = compute_frenet_frames(trans, mask)
 
@@ -96,9 +88,7 @@ class Genie(Diffusion):
 
         # [b, n_res]
         noise_pred_trans = ts.trans - self.model(ts, s, mask).trans
-        noise_pred_rots = (
-            torch.eye(3).view(1, 1, 3, 3).repeat(ts.shape[0], ts.shape[1], 1, 1)
-        )
+        noise_pred_rots = torch.eye(3).view(1, 1, 3, 3).repeat(ts.shape[0], ts.shape[1], 1, 1)
         noise_pred = T(noise_pred_rots, noise_pred_trans)
 
         # [b, n_res, 3]

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 from functools import partialmethod
+
 import torch
 import torch.nn as nn
 
@@ -23,9 +24,7 @@ from genie.utils.tensor_utils import permute_final_dims
 
 
 class TriangleMultiplicativeUpdate(nn.Module):
-    """
-    Implements Algorithms 11 and 12.
-    """
+    """Implements Algorithms 11 and 12."""
 
     def __init__(self, c_z, c_hidden, _outgoing=True):
         """
@@ -35,7 +34,7 @@ class TriangleMultiplicativeUpdate(nn.Module):
             c:
                 Hidden channel dimension
         """
-        super(TriangleMultiplicativeUpdate, self).__init__()
+        super().__init__()
         self.c_z = c_z
         self.c_hidden = c_hidden
         self._outgoing = _outgoing
@@ -114,9 +113,7 @@ class TriangleMultiplicativeUpdate(nn.Module):
 
 
 class TriangleMultiplicationOutgoing(TriangleMultiplicativeUpdate):
-    """
-    Implements Algorithm 11.
-    """
+    """Implements Algorithm 11."""
 
     __init__ = partialmethod(
         TriangleMultiplicativeUpdate.__init__,
@@ -125,9 +122,7 @@ class TriangleMultiplicationOutgoing(TriangleMultiplicativeUpdate):
 
 
 class TriangleMultiplicationIncoming(TriangleMultiplicativeUpdate):
-    """
-    Implements Algorithm 12.
-    """
+    """Implements Algorithm 12."""
 
     __init__ = partialmethod(
         TriangleMultiplicativeUpdate.__init__,

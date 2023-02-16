@@ -1,9 +1,9 @@
 import torch
 from torch import nn
 
-from genie.model.single_feature_net import SingleFeatureNet
 from genie.model.pair_feature_net import PairFeatureNet
 from genie.model.pair_transform_net import PairTransformNet
+from genie.model.single_feature_net import SingleFeatureNet
 from genie.model.structure_net import StructureNet
 
 
@@ -35,11 +35,9 @@ class Denoiser(nn.Module):
         n_structure_transition_layer,
         structure_transition_dropout,
     ):
-        super(Denoiser, self).__init__()
+        super().__init__()
 
-        self.single_feature_net = SingleFeatureNet(
-            c_s, n_timestep, c_pos_emb, c_timestep_emb
-        )
+        self.single_feature_net = SingleFeatureNet(c_s, n_timestep, c_pos_emb, c_timestep_emb)
 
         self.pair_feature_net = PairFeatureNet(c_s, c_p, relpos_k, template_type)
 

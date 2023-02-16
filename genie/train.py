@@ -1,12 +1,12 @@
-import wandb
 import argparse
+
 from pytorch_lightning.callbacks import (
     ModelCheckpoint,
-    RichProgressBar,
     RichModelSummary,
+    RichProgressBar,
 )
+from pytorch_lightning.loggers import TensorBoardLogger, WandbLogger
 from pytorch_lightning.trainer import Trainer, seed_everything
-from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 
 from genie.config import Config
 from genie.data.data_module import SCOPeDataModule
@@ -29,7 +29,6 @@ def main(args):
     checkpoint_callback = ModelCheckpoint(
         every_n_epochs=config.training["checkpoint_every_n_epoch"],
         filename="{epoch}",
-        save_top_k=10,
     )
 
     # seed
@@ -45,15 +44,15 @@ def main(args):
     trainer = Trainer(
         gpus=gpus,
         logger=[tb_logger, wandb_logger],
-        strategy="ddp",
-        deterministic=True,
+        # strategy="ddp",
+        deterministic=False,
         enable_progress_bar=True,
         log_every_n_steps=config.training["log_every_n_step"],
         max_epochs=config.training["n_epoch"],
         callbacks=[
             checkpoint_callback,
             RichProgressBar(),
-            RichModelSummary(max_depth=1),
+            RichModelSummary(max_depth=2),
         ],
     )
 

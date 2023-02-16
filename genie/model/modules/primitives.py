@@ -15,17 +15,14 @@
 # limitations under the License.
 
 import math
-from typing import Optional, Callable
-import numpy as np
+from typing import Callable, Optional
 
+import numpy as np
 import torch
 import torch.nn as nn
 from scipy.stats import truncnorm
 
-from genie.utils.tensor_utils import (
-    permute_final_dims,
-    flatten_final_dims,
-)
+from genie.utils.tensor_utils import flatten_final_dims, permute_final_dims
 
 
 def _calculate_fan(shape, fan="fan_in"):
@@ -94,12 +91,9 @@ def ipa_point_weights_init_(weights):
 
 
 class Linear(nn.Linear):
-    """
-    A Linear layer with built-in nonstandard initializations. Called just
-    like torch.nn.Linear.
+    """A Linear layer with built-in nonstandard initializations. Called just like torch.nn.Linear.
 
-    Implements the initializers in 1.11.4, plus some additional ones found
-    in the code.
+    Implements the initializers in 1.11.4, plus some additional ones found in the code.
     """
 
     def __init__(
@@ -133,7 +127,7 @@ class Linear(nn.Linear):
                 A custom initializer taking weight and bias as inputs.
                 Overrides init if not None.
         """
-        super(Linear, self).__init__(in_dim, out_dim, bias=bias)
+        super().__init__(in_dim, out_dim, bias=bias)
 
         if bias:
             with torch.no_grad():
@@ -162,10 +156,7 @@ class Linear(nn.Linear):
 
 
 class Attention(nn.Module):
-    """
-    Standard multi-head attention using AlphaFold's default layer
-    initialization.
-    """
+    """Standard multi-head attention using AlphaFold's default layer initialization."""
 
     def __init__(
         self,
@@ -191,7 +182,7 @@ class Attention(nn.Module):
             gating:
                 Whether the output should be gated using query data
         """
-        super(Attention, self).__init__()
+        super().__init__()
 
         self.c_q = c_q
         self.c_k = c_k
@@ -203,21 +194,13 @@ class Attention(nn.Module):
         # DISCREPANCY: c_hidden is not the per-head channel dimension, as
         # stated in the supplement, but the overall channel dimension
 
-        self.linear_q = Linear(
-            self.c_q, self.c_hidden * self.no_heads, bias=False, init="glorot"
-        )
-        self.linear_k = Linear(
-            self.c_k, self.c_hidden * self.no_heads, bias=False, init="glorot"
-        )
-        self.linear_v = Linear(
-            self.c_v, self.c_hidden * self.no_heads, bias=False, init="glorot"
-        )
+        self.linear_q = Linear(self.c_q, self.c_hidden * self.no_heads, bias=False, init="glorot")
+        self.linear_k = Linear(self.c_k, self.c_hidden * self.no_heads, bias=False, init="glorot")
+        self.linear_v = Linear(self.c_v, self.c_hidden * self.no_heads, bias=False, init="glorot")
         self.linear_o = Linear(self.c_hidden * self.no_heads, self.c_q, init="final")
 
         if self.gating:
-            self.linear_g = Linear(
-                self.c_q, self.c_hidden * self.no_heads, init="gating"
-            )
+            self.linear_g = Linear(self.c_q, self.c_hidden * self.no_heads, init="gating")
 
         self.sigmoid = nn.Sigmoid()
         self.softmax = nn.Softmax(dim=-1)

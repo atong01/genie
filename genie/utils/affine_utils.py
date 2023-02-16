@@ -73,13 +73,9 @@ class T:
         if self.rots is None and self.trans is None:
             raise ValueError("Only one of rots and trans can be None")
         elif self.rots is None:
-            self.rots = T.identity_rot(
-                self.trans.shape[:-1], self.trans.dtype, self.trans.device
-            )
+            self.rots = T.identity_rot(self.trans.shape[:-1], self.trans.dtype, self.trans.device)
         elif self.trans is None:
-            self.trans = T.identity_trans(
-                self.rots.shape[:-2], self.rots.dtype, self.rots.device
-            )
+            self.trans = T.identity_trans(self.rots.shape[:-2], self.rots.dtype, self.rots.device)
 
         if (
             self.rots.shape[-2:] != (3, 3)
@@ -162,9 +158,7 @@ class T:
 
     @staticmethod
     def identity_trans(shape, dtype, device, requires_grad=False):
-        trans = torch.zeros(
-            (*shape, 3), dtype=dtype, device=device, requires_grad=requires_grad
-        )
+        trans = torch.zeros((*shape, 3), dtype=dtype, device=device, requires_grad=requires_grad)
         return trans
 
     @staticmethod
@@ -219,9 +213,8 @@ class T:
         return T(rots, trans)
 
     def map_tensor_fn(self, fn):
-        """Apply a function that takes a tensor as its only argument to the
-        rotations and translations, treating the final two/one
-        dimension(s), respectively, as batch dimensions.
+        """Apply a function that takes a tensor as its only argument to the rotations and
+        translations, treating the final two/one dimension(s), respectively, as batch dimensions.
 
         E.g.: Given t, an instance of T of shape [N, M], this function can
         be used to sum out the second dimension thereof as follows:
@@ -251,7 +244,7 @@ class T:
         n_xyz = n_xyz + translation
         c_xyz = c_xyz + translation
 
-        c_x, c_y, c_z = [c_xyz[..., i] for i in range(3)]
+        c_x, c_y, c_z = (c_xyz[..., i] for i in range(3))
         norm = torch.sqrt(eps + c_x**2 + c_y**2)
         sin_c1 = -c_y / norm
         cos_c1 = c_x / norm
@@ -279,7 +272,7 @@ class T:
         c_rots = rot_matmul(c2_rot_matrix, c1_rot_matrix)
         n_xyz = rot_vec_mul(c_rots, n_xyz)
 
-        _, n_y, n_z = [n_xyz[..., i] for i in range(3)]
+        _, n_y, n_z = (n_xyz[..., i] for i in range(3))
         norm = torch.sqrt(eps + n_y**2 + n_z**2)
         sin_n = -n_z / norm
         cos_n = n_y / norm

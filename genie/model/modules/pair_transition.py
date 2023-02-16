@@ -22,9 +22,7 @@ from genie.utils.tensor_utils import chunk_layer
 
 
 class PairTransition(nn.Module):
-    """
-    Implements Algorithm 15.
-    """
+    """Implements Algorithm 15."""
 
     def __init__(self, c_z, n, chunk_size=4):
         """
@@ -35,7 +33,7 @@ class PairTransition(nn.Module):
                 Factor by which c_z is multiplied to obtain hidden channel
                 dimension
         """
-        super(PairTransition, self).__init__()
+        super().__init__()
 
         self.c_z = c_z
         self.n = n

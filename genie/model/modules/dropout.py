@@ -14,16 +14,16 @@
 # limitations under the License.
 
 
+from functools import partialmethod
+from typing import List, Union
+
 import torch
 import torch.nn as nn
-from functools import partialmethod
-from typing import Union, List
 
 
 class Dropout(nn.Module):
-    """
-    Implementation of dropout with the ability to share the dropout mask
-    along a particular dimension.
+    """Implementation of dropout with the ability to share the dropout mask along a particular
+    dimension.
 
     If not in training mode, this module computes the identity function.
     """
@@ -36,7 +36,7 @@ class Dropout(nn.Module):
             batch_dim:
                 Dimension(s) along which the dropout mask is shared
         """
-        super(Dropout, self).__init__()
+        super().__init__()
 
         self.r = r
         if type(batch_dim) == int:

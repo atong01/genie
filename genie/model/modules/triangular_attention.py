@@ -14,17 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from functools import partialmethod
 import math
+from functools import partialmethod
+
 import torch
 import torch.nn as nn
 
-from genie.model.modules.primitives import Linear, Attention
-from genie.utils.tensor_utils import (
-    chunk_layer,
-    permute_final_dims,
-    flatten_final_dims,
-)
+from genie.model.modules.primitives import Attention, Linear
+from genie.utils.tensor_utils import chunk_layer, flatten_final_dims, permute_final_dims
 
 
 class TriangleAttention(nn.Module):
@@ -38,7 +35,7 @@ class TriangleAttention(nn.Module):
             no_heads:
                 Number of attention heads
         """
-        super(TriangleAttention, self).__init__()
+        super().__init__()
 
         self.c_in = c_in
         self.c_hidden = c_hidden
@@ -51,9 +48,7 @@ class TriangleAttention(nn.Module):
 
         self.linear = Linear(c_in, self.no_heads, bias=False, init="normal")
 
-        self.mha = Attention(
-            self.c_in, self.c_in, self.c_in, self.c_hidden, self.no_heads
-        )
+        self.mha = Attention(self.c_in, self.c_in, self.c_in, self.c_hidden, self.no_heads)
 
     def forward(self, x, mask=None):
         """
@@ -122,16 +117,12 @@ class TriangleAttention(nn.Module):
 
 
 class TriangleAttentionStartingNode(TriangleAttention):
-    """
-    Implements Algorithm 13.
-    """
+    """Implements Algorithm 13."""
 
     __init__ = partialmethod(TriangleAttention.__init__, starting=True)
 
 
 class TriangleAttentionEndingNode(TriangleAttention):
-    """
-    Implements Algorithm 14.
-    """
+    """Implements Algorithm 14."""
 
     __init__ = partialmethod(TriangleAttention.__init__, starting=False)

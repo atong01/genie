@@ -1,9 +1,9 @@
 import torch
 from torch import nn
 
+from genie.model.modules.backbone_update import BackboneUpdate
 from genie.model.modules.invariant_point_attention import InvariantPointAttention
 from genie.model.modules.structure_transition import StructureTransition
-from genie.model.modules.backbone_update import BackboneUpdate
 
 
 class StructureLayer(nn.Module):
@@ -19,11 +19,9 @@ class StructureLayer(nn.Module):
         n_structure_transition_layer,
         structure_transition_dropout,
     ):
-        super(StructureLayer, self).__init__()
+        super().__init__()
 
-        self.ipa = InvariantPointAttention(
-            c_s, c_p, c_hidden_ipa, n_head, n_qk_point, n_v_point
-        )
+        self.ipa = InvariantPointAttention(c_s, c_p, c_hidden_ipa, n_head, n_qk_point, n_v_point)
         self.ipa_dropout = nn.Dropout(ipa_dropout)
         self.ipa_layer_norm = nn.LayerNorm(c_s)
 
@@ -61,7 +59,7 @@ class StructureNet(nn.Module):
         n_structure_transition_layer,
         structure_transition_dropout,
     ):
-        super(StructureNet, self).__init__()
+        super().__init__()
 
         self.n_structure_block = n_structure_block
 

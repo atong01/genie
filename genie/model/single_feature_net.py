@@ -6,7 +6,7 @@ from genie.utils.encoding import sinusoidal_encoding
 
 class SingleFeatureNet(nn.Module):
     def __init__(self, c_s, n_timestep, c_pos_emb, c_timestep_emb):
-        super(SingleFeatureNet, self).__init__()
+        super().__init__()
 
         self.c_s = c_s
         self.n_timestep = n_timestep

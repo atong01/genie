@@ -1,4 +1,5 @@
 import math
+
 import torch
 
 
@@ -8,7 +9,7 @@ def get_betas(n_timestep, schedule):
     elif schedule == "cosine":
         return cosine_beta_schedule(n_timestep)
     else:
-        print("Invalid schedule: {}".format(schedule))
+        print(f"Invalid schedule: {schedule}")
         exit(0)
 
 
