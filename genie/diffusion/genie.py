@@ -45,6 +45,7 @@ class Genie(Diffusion):
         coords = coords.float()
         mask = mask.float()
 
+        # c alpha coordinates
         ca_coords = coords[:, 1::3]
         trans = ca_coords - torch.mean(ca_coords, dim=1, keepdim=True)
         rots = compute_frenet_frames(trans, mask)
@@ -66,6 +67,7 @@ class Genie(Diffusion):
 
         # [b, n_res, 3]
         trans_noise = torch.randn_like(t0.trans) * mask.unsqueeze(-1)
+        # this is an identity matrix...
         rots_noise = (
             torch.eye(3).view(1, 1, 3, 3).repeat(t0.shape[0], t0.shape[1], 1, 1).to(self.device)
         )
